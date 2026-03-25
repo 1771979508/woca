@@ -1,0 +1,31 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px;
+
+  .logo-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 80px;
+
+    .logo-text { font-size: 80px; }
+    .app-name { font-size: 40px; font-weight: 700; color: #fff; margin-top: 16px; }
+    .app-desc { font-size: 26px; color: rgba(255,255,255,0.8); margin-top: 12px; }
+  }
+
+  .login-btn {
+    width: 100%;
+    height: 90px;
+    background: #fff;
+    color: #6366f1;
+    font-size: 32px;
+    font-weight: 600;
+    border-radius: 45px;
+    border: none;
+  }
+}

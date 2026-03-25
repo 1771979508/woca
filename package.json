@@ -1,0 +1,20 @@
+{
+  "name": "woca",
+  "private": true,
+  "version": "0.0.1",
+  "description": "视频去字幕 & 画质增强平台 Monorepo",
+  "scripts": {
+    "dev": "lerna run dev --parallel",
+    "build": "lerna run build",
+    "test": "lerna run test",
+    "lint": "lerna run lint",
+    "bootstrap": "pnpm install"
+  },
+  "devDependencies": {
+    "lerna": "^8.1.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

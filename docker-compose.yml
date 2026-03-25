@@ -1,0 +1,89 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: woca-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS:-woca123456}
+      MYSQL_DATABASE: ${DB_NAME:-woca}
+      MYSQL_USER: ${DB_USER:-woca}
+      MYSQL_PASSWORD: ${DB_PASS:-woca123456}
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: woca-redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    command: redis-server --requirepass ${REDIS_PASS:-woca123456} --appendonly yes
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: ./packages/server
+      dockerfile: Dockerfile
+    container_name: woca-server
+    restart: always
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-woca}
+      DB_PASS: ${DB_PASS:-woca123456}
+      DB_NAME: ${DB_NAME:-woca}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASS: ${REDIS_PASS:-woca123456}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      WX_MP_APPID: ${WX_MP_APPID}
+      WX_MP_SECRET: ${WX_MP_SECRET}
+      WX_MINIAPP_APPID: ${WX_MINIAPP_APPID}
+      WX_MINIAPP_SECRET: ${WX_MINIAPP_SECRET}
+      WX_PAY_MCH_ID: ${WX_PAY_MCH_ID}
+      WX_PAY_API_KEY: ${WX_PAY_API_KEY}
+      SUBTITLE_SECRET_ID: ${SUBTITLE_SECRET_ID}
+      SUBTITLE_SECRET_KEY: ${SUBTITLE_SECRET_KEY}
+      SERVER_URL: ${SERVER_URL:-http://localhost:3001}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./packages/web
+      dockerfile: Dockerfile
+    container_name: woca-web
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    depends_on:
+      - server
+
+volumes:
+  mysql_data:
+  redis_data:
