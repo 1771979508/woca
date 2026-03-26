@@ -19,7 +19,7 @@ import { UserModule } from './modules/user/user.module'
         host: config.get('DB_HOST', 'localhost'),
         port: config.get<number>('DB_PORT', 3306),
         username: config.get('DB_USER', 'root'),
-        password: config.get('DB_PASS', 'root'),
+        password: config.get('DB_PASS', ''),
         database: config.get('DB_NAME', 'woca'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: config.get('NODE_ENV') !== 'production',
