@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import './app.scss'
 
